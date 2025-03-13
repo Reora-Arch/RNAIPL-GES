@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guess the 6 Pillars</title>
+    <style>
+        body { text-align: center; font-family: Arial, sans-serif; padding: 20px; }
+        .pillars-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; margin: 20px; }
+        .pillar { padding: 10px 20px; border: 2px solid #000; cursor: pointer; border-radius: 5px; }
+        .selected { background-color: lightblue; }
+        .hidden { display: none; }
+        #score-container { font-size: 2em; margin-top: 20px; opacity: 0; transition: opacity 1s; }
+    </style>
+</head>
+<body>
+    <h1>Choose the 6 Correct Pillars to Reveal the Score!</h1>
+    <div class="pillars-container" id="pillars">
+        <div class="pillar">DEI</div>
+        <div class="pillar">Ethics</div>
+        <div class="pillar">Engagement</div>
+        <div class="pillar">Enablement</div>
+        <div class="pillar">Culture</div>
+        <div class="pillar">Leadership</div>
+        <div class="pillar">Innovation</div>
+        <div class="pillar">Strategy</div>
+        <div class="pillar">Growth</div>
+    </div>
+    <button id="submit" disabled>Submit</button>
+    <div id="result" class="hidden">Try Again!</div>
+    <div id="score-container" class="hidden">Your Score: <span id="score">0</span>%</div>
+    
+    <script>
+        const correctPillars = ["DEI", "Ethics", "Engagement", "Enablement", "Culture", "Leadership"];
+        let selectedPillars = [];
+
+        document.querySelectorAll(".pillar").forEach(pillar => {
+            pillar.addEventListener("click", function() {
+                if (selectedPillars.includes(this.innerText)) {
+                    this.classList.remove("selected");
+                    selectedPillars = selectedPillars.filter(p => p !== this.innerText);
+                } else if (selectedPillars.length < 6) {
+                    this.classList.add("selected");
+                    selectedPillars.push(this.innerText);
+                }
+                document.getElementById("submit").disabled = selectedPillars.length !== 6;
+            });
+        });
+
+        document.getElementById("submit").addEventListener("click", function() {
+            if (selectedPillars.sort().toString() === correctPillars.sort().toString()) {
+                document.getElementById("result").classList.add("hidden");
+                animateScore(0, 85); // Example score
+                document.getElementById("score-container").classList.remove("hidden");
+            } else {
+                document.getElementById("result").classList.remove("hidden");
+            }
+        });
+
+        function animateScore(start, end) {
+            let current = start;
+            const scoreElement = document.getElementById("score");
+            document.getElementById("score-container").style.opacity = 1;
+            const interval = setInterval(() => {
+                scoreElement.innerText = current;
+                if (current >= end) clearInterval(interval);
+                current += 1;
+            }, 50);
+        }
+    </script>
+</body>
+</html>
